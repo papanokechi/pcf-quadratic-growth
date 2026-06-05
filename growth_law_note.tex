@@ -1,0 +1,359 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+
+\title{An exact growth constant for the quadratic\\
+polynomial continued fraction\\[2pt]
+\large (elementary, modulo one standard Gamma-ratio asymptotic)}
+\author{Papanokechi}
+\date{June 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For integers $A,B,C\ge 1$ let $b_k=Ak^2+Bk+C$ and let $q_n$ be the standard
+continuant denominators of the polynomial continued fraction
+$V(A,B,C)=1+\mathbf{K}_{n\ge1}\,1/(An^2+Bn+C)$, i.e.\ $q_0=1$, $q_1=b_1$,
+$q_n=b_n q_{n-1}+q_{n-2}$. We prove
+\[
+  \log q_n \;=\; n\log A + 2\log(n!) + \tfrac{B}{A}\log n
+            \;+\; K(A,B,C) \;+\; O(1/n),
+\]
+with the additive constant in closed-plus-transcendental form
+$K=K_\Gamma+\delta$, where
+$K_\Gamma=-\log\!\big(\Gamma(1-r_1)\Gamma(1-r_2)\big)$ is the elementary
+naive-product constant ($r_1,r_2$ the roots of $Ax^2+Bx+C$) and
+$\delta=\log R_\infty>0$, $R_\infty=\lim_n q_n/\prod_{k=1}^n b_k$, is a strictly
+positive continued-fraction correction. The two pieces are independent: $K_\Gamma$
+comes from the product $\prod b_k$ alone, and $\delta$ from the $+q_{n-2}$ term.
+At $B=0$ one has $K_\Gamma(A,0,C)=\log\!\big(\sinh(\pi\sqrt{C/A})/(\pi\sqrt{C/A})\big)$.
+This pins the additive constant left undetermined by the deposited
+denominator-growth bound $\log Q_n\ge n\log n-O(n)$ \cite{ladder}, sharpening that
+one-sided estimate (which suffices for irrationality by Euler's criterion) to an
+exact two-sided expansion through $O(1/n)$ (Corollary~\ref{cor:recover}); the
+elementary part $K_\Gamma$ is closed-form, while $\delta=\log R_\infty$ is a
+strictly positive correction for which we claim \emph{no} closed form. Every
+algebraic and asymptotic step below is independently confirmed numerically
+(\texttt{verify\_structural.py}, mpmath, $50$--$60$ digits).
+\end{abstract}
+
+\noindent\textbf{2020 MSC:} 11J70 (primary), 11A55, 33B15.\quad
+\textbf{Keywords:} polynomial continued fraction, convergent denominators,
+asymptotic growth law, Gamma function, irrationality.
+
+\section{Introduction and relation to the deposited bound}
+
+The polynomial continued fraction
+$V(A,B,C)=1+\mathbf{K}_{n\ge1}\,1/(An^2+Bn+C)$ has unit partial numerators, so its
+convergents $p_n/q_n$ obey the Wronskian $|p_nq_{n-1}-p_{n-1}q_n|=1$ and Euler's
+irrationality criterion applies as soon as the denominators $q_n$ grow fast
+enough. For that purpose one needs only a \emph{one-sided lower bound} on
+$\log q_n$. The deposited catalogue \cite{ladder} proves exactly such a bound: its
+denominator-growth lemma (\textsf{lem:Qgrowth}, ``Denominator growth'') states,
+for $A\ge1$, $C\ge1$ and $An^2+Bn+C>0$ on $n\ge1$,
+\[
+  \log Q_n \;\ge\; n\log n - O(n)
+\]
+for the standard continuant $Q_n=(An^2+Bn+C)Q_{n-1}+Q_{n-2}$ (its proof in fact
+yields the stronger $\log Q_n\ge 2n\log n-O(n)$), and uses it (via
+\textsf{prop:irrat}) to certify $482$ quadratic constants irrational by Euler's
+criterion. The \emph{exact} size of $\log q_n$ — in particular its additive
+constant — is neither determined nor needed there.
+
+This note determines it. For integers $A,B,C\ge1$ we prove a two-sided asymptotic
+(Theorem~\ref{thm:main}) with an explicit additive constant $K=K_\Gamma+\delta$.
+The leading term $2\log(n!)=2n\log n-2n+O(\log n)$ reproduces the deposited bound
+(Corollary~\ref{cor:recover}), so the result is consistent with, and strictly
+sharper than, \cite{ladder}: a one-sided estimate of the leading order is upgraded
+to a full expansion through $O(1/n)$ with the constant pinned. The constant
+separates cleanly into an elementary product part $K_\Gamma$ (the constant of the
+naive product $\prod b_k$) and a continued-fraction correction $\delta$ (the
+$+q_{n-2}$ term); the two are genuinely distinct, since
+$q_n/\prod_{k\le n}b_k\to R_\infty>1$.
+
+Two caveats fix the scope honestly. \emph{(i)} The exact law is proved for
+integers $A,B,C\ge1$, where both roots of $Ax^2+Bx+C$ have negative real part; the
+deposited bound covers the slightly wider sign range $An^2+Bn+C>0$. \emph{(ii)}
+While $K_\Gamma$ is closed-form (at $B=0$ it is the $\sinh$ expression above), we
+give \emph{no} closed form for the correction $\delta=\log R_\infty>0$: an
+$80$-digit integer-relation (PSLQ) search against
+$\{1,\log2,\log3,\log\pi,\log(\sinh/\cdot),\gamma,\log\Gamma(\tfrac14)\}$ finds no
+relation \emph{for the single triple $(A,B,C)=(1,0,1)$ against this basis} — which
+we record as suggestive evidence, not proof, that $\delta$ is non-elementary. The
+contribution is therefore the exact \emph{structure} of the constant and the proof
+that the correction is strictly positive, not a closed form for $\delta$.
+
+\paragraph{Standing assumptions and well-posedness.}
+Throughout $A,B,C$ are integers $\ge 1$. The roots of $Ax^2+Bx+C$ satisfy
+$r_1+r_2=-B/A<0$ and $r_1r_2=C/A>0$, so either they are a complex-conjugate pair
+or two negative reals; in all cases $\operatorname{Re}r_i<0$, hence $1-r_i$ avoids
+the non-positive integers and $\Gamma(1-r_1)\Gamma(1-r_2)$ is finite and, being
+either $|\Gamma(1-r_1)|^2$ (conjugate roots) or a product of two positive reals
+(negative real roots), is real and positive. Thus $K_\Gamma$ is real and
+well-defined. Also $b_k=Ak^2+Bk+C\ge A+B+C\ge 3>0$ for all $k\ge1$, so $q_n>0$ and
+$P_n:=\prod_{k=1}^n b_k>0$. All Gamma arguments below lie in the open right
+half-plane $\{\operatorname{Re}z>0\}$ (since $\operatorname{Re}(n+1-r_i)>0$ and
+$\operatorname{Re}(1-r_i)>0$), where $\Gamma$ is zero- and pole-free; we write
+$\operatorname{Log}\Gamma$ for the principal branch there, compatible with
+conjugation, $\operatorname{Log}\Gamma(\bar z)=\overline{\operatorname{Log}\Gamma(z)}$,
+so all complex Gamma logarithms below are unambiguous.
+
+\section{The product constant $K_\Gamma$}
+
+\begin{lemma}[Exact product/Gamma identity]\label{lem:prod}
+For all $n\ge0$,
+\[
+  P_n \;=\; \prod_{k=1}^n (Ak^2+Bk+C)
+       \;=\; A^n\,
+         \frac{\Gamma(n+1-r_1)\,\Gamma(n+1-r_2)}
+              {\Gamma(1-r_1)\,\Gamma(1-r_2)} .
+\]
+\end{lemma}
+
+\begin{proof}
+Factor $Ak^2+Bk+C=A(k-r_1)(k-r_2)$, so
+$P_n=A^n\prod_{k=1}^n(k-r_1)\prod_{k=1}^n(k-r_2)$. For any $r$ not a positive
+integer, the telescoping identity
+$\prod_{k=1}^n(k-r)=(1-r)(2-r)\cdots(n-r)=\Gamma(n+1-r)/\Gamma(1-r)$
+holds (immediate from $\Gamma(z+1)=z\Gamma(z)$). Applying it to $r_1,r_2$ gives the
+claim. The right side is real because $r_1,r_2$ are real or conjugate.
+\end{proof}
+
+\begin{lemma}[Gamma ratio asymptotic]\label{lem:ratio}
+For fixed $r$ with $\operatorname{Re}r<0$, as $n\to\infty$, with the principal
+branch $\operatorname{Log}\Gamma$ on $\{\operatorname{Re}z>0\}$,
+\[
+  \operatorname{Log}\Gamma(n+1-r) \;=\; \operatorname{Log}\Gamma(n+1) \;-\; r\log n
+        \;+\; \frac{r(r-1)}{2n} \;+\; O(1/n^2).
+\]
+\end{lemma}
+
+\begin{proof}
+The standard ratio expansion
+$\Gamma(z+a)/\Gamma(z+b)=z^{a-b}\big(1+\tfrac{(a-b)(a+b-1)}{2z}+O(1/z^2)\big)$%
+\footnote{DLMF \S5.11(iii) (\emph{Ratios}), eq.~5.11.13,
+$\Gamma(z+a)/\Gamma(z+b)\sim z^{a-b}\sum_{k\ge0}G_k(a,b)z^{-k}$ with $G_0=1$ and,
+from eq.~5.11.17, $G_1(a,b)=\tfrac12(a-b)(a+b-1)$ (here $a=-r$, $b=0$, so
+$G_1(-r,0)=\tfrac12 r(r+1)$). Equation numbers verified against the current DLMF
+release (\texttt{dlmf.nist.gov/5.11}); the leading $z^{a-b}$ term and the
+$r(r-1)/2$ log-coefficient are also confirmed numerically in
+\texttt{verify\_structural.py} (step S2, two-point Richardson, matching to
+$\ge6$ digits across the test cases).}
+with $z=n+1$, $a=-r$, $b=0$ gives
+$\Gamma(n+1-r)/\Gamma(n+1)=(n+1)^{-r}\big(1+\tfrac{r(r+1)}{2(n+1)}+O(1/n^2)\big)$.
+Taking logarithms and using $\log(n+1)=\log n+1/n+O(1/n^2)$ and
+$\log(1+\tfrac{r(r+1)}{2(n+1)})=\tfrac{r(r+1)}{2n}+O(1/n^2)$,
+\[
+  \log\frac{\Gamma(n+1-r)}{\Gamma(n+1)}
+   = -r\log n -\frac{r}{n}+\frac{r(r+1)}{2n}+O(1/n^2)
+   = -r\log n + \frac{r(r-1)}{2n}+O(1/n^2). \qedhere
+\]
+\end{proof}
+
+\begin{lemma}[Product constant]\label{lem:Kgamma}
+As $n\to\infty$,
+\[
+  \log P_n \;=\; n\log A + 2\log(n!) + \tfrac{B}{A}\log n
+            \;+\; K_\Gamma \;+\; \frac{\kappa}{n} \;+\; O(1/n^2),
+\]
+where $K_\Gamma=-\log(\Gamma(1-r_1)\Gamma(1-r_2))$ and
+$\kappa=\tfrac12\big(r_1(r_1-1)+r_2(r_2-1)\big)
+       =\tfrac12\big(\tfrac{B^2}{A^2}+\tfrac{B}{A}-\tfrac{2C}{A}\big)$.
+\end{lemma}
+
+\begin{proof}
+Since $\log P_n$ is real (Lemma~\ref{lem:prod}, $P_n>0$), take its value as
+$\operatorname{Log}$ of the positive real $P_n$ and expand each factor by
+Lemma~\ref{lem:ratio}. For conjugate roots the two contributions are complex
+conjugates, so $\operatorname{Log}\Gamma(n+1-r_1)+\operatorname{Log}\Gamma(n+1-r_2)
+=2\operatorname{Re}\operatorname{Log}\Gamma(n+1-r_1)$ and likewise for the
+$\Gamma(1-r_i)$ pair; for real roots every term is already real. Either way no
+$2\pi i$ ambiguity arises, and
+\[
+  \log P_n = n\log A + 2\operatorname{Log}\Gamma(n+1)
+     -(r_1+r_2)\log n
+     + \frac{r_1(r_1-1)+r_2(r_2-1)}{2n}
+     - \log\big(\Gamma(1-r_1)\Gamma(1-r_2)\big) + O(1/n^2).
+\]
+Now $\operatorname{Log}\Gamma(n+1)=\log(n!)$ and $-(r_1+r_2)=B/A$. The closed form
+for $\kappa$ follows from $r_1+r_2=-B/A$, $r_1r_2=C/A$, whence
+$r_1^2+r_2^2=(r_1+r_2)^2-2r_1r_2=B^2/A^2-2C/A$ and
+$r_1(r_1-1)+r_2(r_2-1)=B^2/A^2-2C/A+B/A$. The sum
+$\tfrac{r_1(r_1-1)+r_2(r_2-1)}{2}=\kappa$ is real (symmetric in the conjugate pair).
+\end{proof}
+
+\section{The continued-fraction correction $\delta$}
+
+Let $R_n:=q_n/P_n$ (so $R_0=R_1=1$).
+
+\begin{lemma}[Scaled recurrence]\label{lem:scaled}
+For all $n\ge2$, $\displaystyle R_n=R_{n-1}+\frac{R_{n-2}}{b_{n-1}b_n}$.
+Consequently $(R_n)$ is strictly increasing, bounded above, and converges to a
+limit $R_\infty\in(1,\infty)$ with $R_\infty-R_n=O(1/n^3)$.
+\end{lemma}
+
+\begin{proof}
+Divide $q_n=b_nq_{n-1}+q_{n-2}$ by $P_n=b_nP_{n-1}=b_nb_{n-1}P_{n-2}$:
+\[
+  R_n=\frac{q_n}{P_n}
+     =\frac{q_{n-1}}{P_{n-1}}+\frac{q_{n-2}}{b_{n-1}b_nP_{n-2}}
+     =R_{n-1}+\frac{R_{n-2}}{b_{n-1}b_n}.
+\]
+All $b_k>0$ and $R_0,R_1>0$, so by induction $R_n>0$ and the increment
+$R_n-R_{n-1}=R_{n-2}/(b_{n-1}b_n)>0$; hence $(R_n)$ is strictly increasing, and
+$R_2=1+1/(b_1b_2)>1$. By monotonicity $R_{n-2}\le R_{n-1}$, so
+$R_n\le R_{n-1}\big(1+\tfrac{1}{b_{n-1}b_n}\big)$, giving
+$R_n\le\prod_{k=2}^\infty\big(1+\tfrac{1}{b_{k-1}b_k}\big)$. Since
+$b_{k-1}b_k\ge A^2(k-1)^2k^2$, the sum $\sum_k 1/(b_{k-1}b_k)$ converges
+($=O(\sum k^{-4})$), so the product converges and $(R_n)$ is bounded. A monotone
+bounded sequence converges; the limit $R_\infty$ satisfies $R_\infty\ge R_2>1$.
+Finally, since $b_{m-1}b_m\ge A^2(m-1)^2m^2\ge A^2(m-1)^4$ we have, by comparison
+with $\int_n^\infty t^{-4}\,dt$,
+$\sum_{m>n}1/(b_{m-1}b_m)\le A^{-2}\sum_{m>n}(m-1)^{-4}=O(1/n^3)$. Summing the
+(positive) increments past $n$,
+\[
+  0<R_\infty-R_n=\sum_{m>n}\frac{R_{m-2}}{b_{m-1}b_m}
+     \le R_\infty\sum_{m>n}\frac{1}{b_{m-1}b_m}=O(1/n^3).\qedhere
+\]
+\end{proof}
+
+\begin{lemma}[Correction constant]\label{lem:delta}
+$\log R_n=\delta+O(1/n^3)$ with $\delta:=\log R_\infty>0$.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:scaled}, $R_n=R_\infty(1+O(1/n^3))$ with $R_\infty>1$, so
+$\log R_n=\log R_\infty+\log(1+O(1/n^3))=\delta+O(1/n^3)$, and $\delta>0$ because
+$R_\infty>1$.
+\end{proof}
+
+\section{The growth law}
+
+\begin{theorem}\label{thm:main}
+With the standing assumptions (in particular $A,B,C\ge1$, so both roots
+$r_1,r_2$ of $Ax^2+Bx+C$ have negative real part and every Gamma argument below
+avoids the poles, making $K_\Gamma$ real and finite), as $n\to\infty$,
+\[
+  \log q_n \;=\; n\log A + 2\log(n!) + \tfrac{B}{A}\log n
+            \;+\; \big(K_\Gamma+\delta\big) \;+\; \frac{\kappa}{n} \;+\; O(1/n^2),
+\]
+where $K_\Gamma=-\log(\Gamma(1-r_1)\Gamma(1-r_2))$, $\delta=\log R_\infty>0$, and
+$\kappa=\tfrac12(B^2/A^2+B/A-2C/A)$. In particular the additive constant is
+$K(A,B,C)=K_\Gamma+\delta$, and
+$\log q_n=n\log A+2\log(n!)+\tfrac{B}{A}\log n+K+O(1/n)$.
+\end{theorem}
+
+\begin{proof}
+$\log q_n=\log P_n+\log R_n$. Substitute Lemma~\ref{lem:Kgamma} (which carries the
+$\kappa/n$ term, $O(1/n^2)$ remainder) and Lemma~\ref{lem:delta} (which contributes
+$\delta$ with $O(1/n^3)\subset O(1/n^2)$ remainder, and no $1/n$ term). Adding gives
+the stated expansion; the $1/n$ coefficient is $\kappa$ from the product alone.
+\end{proof}
+
+\begin{corollary}[Recovery and sharpening of the deposited bound]\label{cor:recover}
+For integers $A,B,C\ge1$, Theorem~\ref{thm:main} gives
+$\log q_n = 2n\log n + O(n)$; in particular $\log q_n\ge n\log n$ for all
+sufficiently large $n$. Hence, on the sub-family $A,B,C\ge1$, Theorem~\ref{thm:main}
+implies the deposited denominator-growth bound $\log Q_n\ge n\log n-O(n)$ of
+\cite{ladder} (with the same leading constant $2n\log n$), while additionally
+fixing every term down to $O(1/n)$ and supplying the exact additive constant
+$K_\Gamma+\delta$.
+\end{corollary}
+
+\begin{proof}
+By Stirling $2\log(n!)=2n\log n-2n+O(\log n)$; also $n\log A=O(n)$,
+$\tfrac{B}{A}\log n=O(\log n)$, and $K_\Gamma+\delta+\kappa/n=O(1)$. Summing the
+expansion of Theorem~\ref{thm:main} gives $\log q_n=2n\log n+O(n)$. Since the
+$O(n)$ remainder is $o(n\log n)$, $\log q_n\ge n\log n$ eventually, which is the
+deposited inequality; Theorem~\ref{thm:main} additionally fixes all lower-order
+terms.
+\end{proof}
+
+\begin{remark}[The $B=0$ slice]
+At $B=0$ the $(B/A)\log n$ term vanishes and $r_{1,2}=\pm i\sqrt{C/A}$, so by the
+reflection/product formula
+$\Gamma(1-i y)\Gamma(1+i y)=\pi y/\sinh(\pi y)$ with $y=\sqrt{C/A}$, giving
+$K_\Gamma(A,0,C)=\log\!\big(\sinh(\pi\sqrt{C/A})/(\pi\sqrt{C/A})\big)$. This is the
+elementary product constant; the \emph{true} constant for $q_n$ is
+$K_\Gamma+\delta$ with $\delta=\log R_\infty>0$, i.e.\ strictly larger.
+\end{remark}
+
+\begin{remark}[Relation to the deposited irrationality bound]
+The deposited paper \cite{ladder} uses the same standard continuant $Q_n$ (e.g.\
+for $A=C=1,B=0$ one has $Q_3=112$, not the product value $100$), so $\delta=\log
+R_\infty$ is genuinely present in its object; but it establishes only the
+one-sided lower bound \textsf{lem:Qgrowth}, $\log Q_n\ge n\log n-O(n)$, which is
+all Euler's criterion (\textsf{prop:irrat}) requires. By Corollary~\ref{cor:recover}
+Theorem~\ref{thm:main} reproduces and strictly sharpens that bound on the
+$A,B,C\ge1$ sub-family. It contradicts nothing deposited: no deposited manuscript
+pins the additive constant, and the only ``$\sinh$'' elsewhere in the corpus is a
+Bessel-ratio \emph{value} of one even continued fraction, unrelated to the present
+growth constant.
+\end{remark}
+
+\section*{Epistemic status}
+Four-class (SIARC) grading:
+\begin{itemize}
+\item \textbf{STRUCTURAL} (hand proof; not yet machine-checked in Lean): the full
+Theorem~\ref{thm:main}, including $K=K_\Gamma+\delta$, $\delta>0$, the closed form
+for $\kappa$, and the $B=0$ sinh identity. The argument is elementary
+(Lemmas~\ref{lem:prod}--\ref{lem:delta}) and complete; it is labelled STRUCTURAL
+rather than PROVEN solely because it has not been formalized.
+\item \textbf{VERIFIED} (numerically, finite cases): every step is confirmed by
+\texttt{verify\_structural.py} (mpmath, $50$--$60$ digits) over the seven triples
+\[
+  (A,B,C)\in\{(1,0,1),(2,0,1),(1,0,3),(1,1,1),(1,3,1),(3,2,5),(2,3,7)\}:
+\]
+S1 the exact product/Gamma identity; S2 the $r(r-1)/2$ ratio coefficient
+(Richardson); S3 product constant $\to K_\Gamma$; S4 $R_n$ monotone, bounded,
+$R_\infty>1$, $O(1/n^3)$ tail; S5 full-law residual $\to\kappa/n$ against the
+closed form. The cross-check $K_\Gamma\overset{B=0}{=}$ sinh holds to $50$ digits.
+\item \textbf{CONJECTURED}: $\delta=\log R_\infty$ is conjectured to be
+non-elementary (no closed form). The evidence is a single null PSLQ run (at $80$
+digits, for the one triple $(1,0,1)$, against $\{1,\log2,\log3,\log\pi,
+\log(\sinh/\cdot),\gamma,\log\Gamma(1/4)\}$): no relation found. This is suggestive
+for that case and basis only, not a general theorem; a null PSLQ result is a
+complete, honest answer, not a gap to be filled.
+\item \textbf{Standard input (confirmed)}: the sole non-self-contained step is the
+Gamma-ratio asymptotic of Lemma~\ref{lem:ratio} --- DLMF \S5.11(iii) eqs.~5.11.13
+and 5.11.17, whose equation numbers were verified against the current DLMF
+release. The proof is otherwise elementary and self-contained, so the result is
+best described as ``elementary modulo one standard cited asymptotic.''
+\end{itemize}
+The natural \textbf{PROVEN} upgrade is a Lean finitary core: Lemma~\ref{lem:prod}
+(an algebraic identity) and Lemma~\ref{lem:scaled}'s monotone--bounded convergence
+are directly formalizable; the Gamma/Stirling asymptotics can be taken as an
+explicit labelled hypothesis (the conditional-core pattern).
+
+\begin{thebibliography}{9}
+\bibitem{ladder}
+Papanokechi,
+\emph{Polynomial Continued Fractions: a Proved Logarithmic Ladder, a $4/\pi$
+Casoratian Identity, and 482 Irrational Constants}, 2026.
+Denominator-growth lemma \textsf{lem:Qgrowth} and irrationality proposition
+\textsf{prop:irrat}. Source \texttt{source.tex} in directory
+\texttt{polynomial-continued-fractions-proved-logarithmic-laddera4casoratian/} of
+the repository \texttt{papanokechi/submitted-manuscripts} at commit
+\texttt{c45e93b}.
+\par\smallskip\noindent
+\textit{FLAG(operator): insert the deposited paper's own (concept/version) DOI here
+once minted; do \textbf{not} reuse the M9 DOI \texttt{10.5281/zenodo.20542161},
+which is a different artifact.}
+
+\bibitem{dlmf}
+F.~W.~J.~Olver et al.\ (eds.),
+\emph{NIST Digital Library of Mathematical Functions},
+\texttt{https://dlmf.nist.gov/}, \S5.11(iii) (\emph{Ratios}), eqs.~5.11.13 and
+5.11.17 (equation numbers verified against the current release).
+\end{thebibliography}
+
+\end{document}
