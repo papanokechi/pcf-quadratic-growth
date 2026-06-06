@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}{Corollary}
@@ -13,8 +14,9 @@
 \title{An exact growth constant for the quadratic\\
 polynomial continued fraction\\[2pt]
 \large (elementary, modulo one standard Gamma-ratio asymptotic)}
-\author{Papanokechi}
-\date{June 2026}
+\author{Papanokechi\\
+\small ORCID: \href{https://orcid.org/0009-0000-6192-8273}{0009-0000-6192-8273}}
+\date{June 2026 \quad(\texttt{pcf-quadratic-growth} v0.1.0)}
 
 \begin{document}
 \maketitle
@@ -355,5 +357,18 @@ F.~W.~J.~Olver et al.\ (eds.),
 \texttt{https://dlmf.nist.gov/}, \S5.11(iii) (\emph{Ratios}), eqs.~5.11.13 and
 5.11.17 (equation numbers verified against the current release).
 \end{thebibliography}
+
+\paragraph{Code and data availability.}
+The verifier \texttt{verify\_structural.py} and harness \texttt{harness\_quad.py},
+reproducing every numerical check (steps S1--S5), are available in the repository
+\texttt{papanokechi/pcf-quadratic-growth}
+(\url{https://github.com/papanokechi/pcf-quadratic-growth}).
+
+\paragraph{AI-assistance disclosure.}
+Prepared with AI assistance (GitHub Copilot; Anthropic Claude) for drafting,
+computer-algebra verification, and manuscript preparation. The numerical
+verification was obtained by running \texttt{verify\_structural.py} (mpmath,
+$50$--$60$ digits); the author takes responsibility for the content and for the
+placement of each claim within the four-grade epistemic partition.
 
 \end{document}

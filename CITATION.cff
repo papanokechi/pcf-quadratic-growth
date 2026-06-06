@@ -22,11 +22,12 @@ abstract: >-
 authors:
   # ORCID source-verified from the ORCID registry page.
   - family-names: "Papanokechi"
+    affiliation: "Independent Researcher"
     orcid: "https://orcid.org/0009-0000-6192-8273"
 version: "0.1.0"
 date-released: "2026-06-06"   # FLAG(operator): set to the actual tag date
 license: Apache-2.0
-repository-code: "https://github.com/papanokechi/pcf-quadratic-growth"  # FLAG(operator): create repo / confirm URL
+repository-code: "https://github.com/papanokechi/pcf-quadratic-growth"  # confirmed: repo created and pushed (branch master)
 keywords:
   - "polynomial continued fractions"
   - "convergent denominators"
