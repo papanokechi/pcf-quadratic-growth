@@ -2,13 +2,12 @@
   "upload_type": "publication",
   "publication_type": "preprint",
   "title": "pcf-quadratic-growth: An exact growth constant for the quadratic polynomial continued fraction (structural proof; numerically verified)",
-  "version": "0.1.0",
+  "version": "1.0",
   "language": "eng",
-  "license": "Apache-2.0",
+  "license": "CC-BY-4.0",
   "creators": [
     {
       "name": "Papanokechi",
-      "affiliation": "Independent Researcher",
       "orcid": "0009-0000-6192-8273"
     }
   ],
@@ -29,5 +28,5 @@
       "resource_type": "publication-preprint"
     }
   ],
-  "notes": "ORCID (0009-0000-6192-8273) is source-verified. The DLMF Gamma-ratio equation numbers (5.11.13, 5.11.17) used in growth_law_note.tex Lemma 2 are confirmed against the live DLMF release. The deposited ladder paper's concept DOI (10.5281/zenodo.19491767) is set in related_identifiers (NOT the M9 DOI 10.5281/zenodo.20542161 \u2014 a different artifact). Repository github.com/papanokechi/pcf-quadratic-growth is created and pushed (branch master). Apache-2.0 per the project convention for code-adjacent artifacts; the deposited unit is growth_law_note.pdf (the paper) plus verify_structural.py and harness_quad.py (the numerical witnesses)."
+  "notes": "ORCID (0009-0000-6192-8273) is source-verified. The DLMF Gamma-ratio equation numbers (5.11.13, 5.11.17) used in growth_law_note.tex Lemma 2 are confirmed against the live DLMF release. The isSupplementTo identifier is the deposited ladder paper's concept (cite-all) DOI 10.5281/zenodo.19491767 (Zenodo record 19491768, single canonical version), verified live; this is NOT the M9 DOI 10.5281/zenodo.20542161 (a different artifact). The repository github.com/papanokechi/pcf-quadratic-growth exists and is pushed. License is CC-BY-4.0 per the project convention (CC-BY-4.0 for papers, Apache-2.0 for code); the deposited unit is growth_law_note.pdf (the paper) plus verify_structural.py and harness_quad.py (the numerical witnesses). CANONICAL DEPOSIT: this paper is ALREADY archived on Zenodo as the manually-uploaded record 20564682 (concept DOI 10.5281/zenodo.20564681), version 1.0, CC-BY-4.0, isSupplementTo the ladder paper 10.5281/zenodo.19491767 and isSupplementedBy this repository - all verified live via the Zenodo API. To avoid minting a DUPLICATE concept DOI for the same paper, the Zenodo<->GitHub webhook for this repository is to be DISABLED and NO GitHub release is to be cut; this .zenodo.json is retained for documentation only and is intentionally NOT used to trigger a release."
 }
