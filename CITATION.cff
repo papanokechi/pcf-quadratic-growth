@@ -25,7 +25,7 @@ authors:
     affiliation: "Independent Researcher"
     orcid: "https://orcid.org/0009-0000-6192-8273"
 version: "0.1.0"
-date-released: "2026-06-06"   # FLAG(operator): set to the actual tag date
+date-released: "2026-06-06"   # matches Zenodo publication date (record 20564682)
 license: Apache-2.0
 repository-code: "https://github.com/papanokechi/pcf-quadratic-growth"  # confirmed: repo created and pushed (branch master)
 keywords:
@@ -37,11 +37,10 @@ keywords:
   - "SIARC"
 references:
   # The deposited paper whose one-sided bound this work sharpens.
-  # FLAG(operator): set DOI to the deposited ladder paper's own concept/version DOI
-  # once minted. Do NOT reuse the M9 DOI 10.5281/zenodo.20542161 (different artifact).
   - type: article
     title: "Polynomial Continued Fractions: a Proved Logarithmic Ladder, a 4/pi Casoratian Identity, and 482 Irrational Constants"
     authors:
       - family-names: "Papanokechi"
-    notes: "Denominator-growth lemma (lem:Qgrowth); source.tex in papanokechi/submitted-manuscripts @ c45e93b. DOI to be confirmed."
+    doi: "10.5281/zenodo.19491767"
+    notes: "Denominator-growth lemma (lem:Qgrowth); source.tex in papanokechi/submitted-manuscripts @ c45e93b. Zenodo concept DOI 10.5281/zenodo.19491767 (not the M9 DOI 10.5281/zenodo.20542161, a different artifact)."
     year: 2026
